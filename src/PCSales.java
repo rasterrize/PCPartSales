@@ -3,25 +3,31 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class PCSales {
+public class PCSales
+{
     private static ArrayList<Customer> customers;
     private static ArrayList<Order> orders;
     private static ArrayList<PCPart> availableParts;
 
     private static boolean runProgram = true;
-    private static MenuState menuState;
-    private static PartCategory currentPartCategory;
+    private static MenuState menuState = MenuState.DisplayMainMenu;
 
-    private enum MenuState {
+    private static Scanner input;
+
+    private static Order customerOrder;
+
+    private enum MenuState
+    {
         DisplayMainMenu,
         DisplayParts,
         DisplayTotalSales,
         ReviewOrder,
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         // Init variables
-        Scanner input = new Scanner(System.in);
+        input = new Scanner(System.in);
         customers = new ArrayList<Customer>();
         orders = new ArrayList<Order>();
         availableParts = new ArrayList<PCPart>();
@@ -35,7 +41,6 @@ public class PCSales {
             input = new Scanner(System.in);
 
             // Get customer full name and email address
-            // TODO: check if name and email address are valid
             System.out.println("Welcome to PC Part Sales.");
             System.out.print("Please enter your full name: ");
             String fullName = input.nextLine();
@@ -44,10 +49,11 @@ public class PCSales {
             boolean foundExistingCustomer = false;
             if (!customers.isEmpty()) {
                 for (Customer customer : customers) {
-                    if (customer.GetName() == fullName)
+                    if (customer.GetName().equalsIgnoreCase(fullName))
                     {
                         foundExistingCustomer = true;
-                        System.out.print("ERROR: This customer already exists, please enter another name: ");
+                        System.out.println("ERROR: This customer already exists, please use another name.");
+                        break;
                     }
                 }
             }
@@ -58,13 +64,19 @@ public class PCSales {
             System.out.print("Please enter your email address: ");
             String emailAddress = input.nextLine();
 
+            if (!emailAddress.contains("@"))
+            {
+                System.out.println("ERROR: Not a valid email address.");
+                continue;
+            }
+
             // Create a new customer and add them to the registry
             int newCustomerID = customers.size() + 1;
             Customer customer = new Customer(newCustomerID, fullName, emailAddress);
             customers.add(customer);
 
-            // Create order for customer
-            Order order = new Order(orders.size() + 1, newCustomerID);
+            // Create a new order for the customer
+            customerOrder = new Order(orders.size() + 1, newCustomerID);
 
             System.out.println();
             System.out.printf("Welcome %s, please choose from our variety of pc parts for your order.\n", fullName);
@@ -74,34 +86,21 @@ public class PCSales {
 
             // Display menu (categories and options)
             boolean selectingParts = true;
+            PartCategory selectedCategory = PartCategory.Invalid;
             while (selectingParts)
             {
                 switch (menuState)
                 {
                     case DisplayMainMenu:
-                        // Display main menu
-                        System.out.printf("You currently have %d parts selected.\n", order.GetParts().size());
-                        System.out.println("--- CATEGORIES ---");
-                        System.out.println("[1] CPU");
-                        System.out.println("[2] Motherboards");
-                        System.out.println("[3] RAM");
-                        System.out.println("[4] Storage Drives");
-                        System.out.println("[5] Cases");
-                        System.out.println("[6] Power Supplies");
-                        System.out.println("[7] Graphics Cards");
-                        System.out.println("--- OPTIONS ---");
-                        System.out.println("[66] Review order and confirm");
-                        System.out.println("[100] Reset selected parts");
-                        System.out.println("[101] Cancel order");
-                        System.out.println("[999] Exit program and display total sales");
-                        System.out.println();
-                        System.out.print("Enter number to select: ");
+                        showMainMenu();
 
-                        int selectedNumber = 1;
-                        try {
+                        int selectedNumber;
+                        try
+                        {
                             selectedNumber = Integer.parseInt(input.nextLine());
                         }
-                        catch (RuntimeException e) {
+                        catch (RuntimeException e)
+                        {
                             System.out.println("ERROR: Category or option must be an integer number");
                             continue;
                         }
@@ -110,44 +109,55 @@ public class PCSales {
                         {
                             case 1:
                                 // Show CPU products
-                                currentPartCategory = PartCategory.CPU;
-                                break;
+                                selectedCategory = PartCategory.CPU;
+                                menuState = MenuState.DisplayParts;
+                                continue;
                             case 2:
                                 // Show Motherboard products
-                                currentPartCategory = PartCategory.Motherboard;
-                                break;
+                                selectedCategory = PartCategory.Motherboard;
+                                menuState = MenuState.DisplayParts;
+                                continue;
                             case 3:
                                 // Show RAM products
-                                currentPartCategory = PartCategory.RAM;
-                                break;
+                                selectedCategory = PartCategory.RAM;
+                                menuState = MenuState.DisplayParts;
+                                continue;
                             case 4:
                                 // Show Storage products
-                                currentPartCategory = PartCategory.StorageDrive;
-                                break;
+                                selectedCategory = PartCategory.StorageDrive;
+                                menuState = MenuState.DisplayParts;
+                                continue;
                             case 5:
                                 // Show Case products
-                                currentPartCategory = PartCategory.Case;
-                                break;
+                                selectedCategory = PartCategory.Case;
+                                menuState = MenuState.DisplayParts;
+                                continue;
                             case 6:
                                 // Show PSU products
-                                currentPartCategory = PartCategory.PSU;
-                                break;
+                                selectedCategory = PartCategory.PSU;
+                                menuState = MenuState.DisplayParts;
+                                continue;
                             case 7:
                                 // Show GPU products
-                                currentPartCategory = PartCategory.GPU;
-                                break;
+                                selectedCategory = PartCategory.GPU;
+                                menuState = MenuState.DisplayParts;
+                                continue;
                             case 66:
-                                // Confirm order details and exit
-                                if (confirmOrder(order, customer))
+                                // Check if order is valid (minimum 1 part)
+                                if (customerOrder.GetParts().isEmpty())
                                 {
-                                    selectingParts = false;
-                                    break;
+                                    System.out.println("ERROR: You must select at least one part");
+                                    continue;
                                 }
 
-                                continue;
+                                // Confirm order details and exit
+                                if (confirmOrder(customerOrder, customer))
+                                    selectingParts = false;
+
+                                break;
                             case 100:
                                 // Reset order parts
-                                order.GetParts().clear();
+                                customerOrder.GetParts().clear();
                                 continue; // NOTE: unsure of how this skips display parts menu state
                             case 101:
                                 // Cancel order
@@ -163,79 +173,10 @@ public class PCSales {
                                 System.out.println("ERROR: Invalid selection. Please try again.");
                                 continue;
                         }
-
-                        menuState = MenuState.DisplayParts;
                         break;
                     case DisplayParts:
-                        // Clear console
-                        // System.out.println(System.lineSeparator().repeat(50));
-
-                        // List available parts for selected category
-                        System.out.printf("--- %s PRODUCTS ---\n", currentPartCategory.toString().toUpperCase());
-                        for (PCPart part : availableParts)
-                        {
-                            if (part.GetCategory() != currentPartCategory)
-                                continue;
-
-                            System.out.printf("- %s %s ($%.2f - ID: %d):\n", part.brandName, part.productName, part.price, part.partNumber);
-                            System.out.print(part.GetDetails());
-                        }
-                        System.out.println();
-
-                        // Loop until user enters a valid option
-                        // TODO: get rid of this for simplicity?
-                        while (true)
-                        {
-                            System.out.print("Enter a product ID to select, or leave empty to go back: ");
-                            String answer = input.nextLine();
-
-                            if (answer == "") {
-                                menuState = MenuState.DisplayMainMenu;
-                                break;
-                            }
-
-                            // Option must be an integer beyond this point
-                            int selectedProductID;
-                            try {
-                                selectedProductID = Integer.parseInt(answer);
-                            }
-                            catch (RuntimeException e) {
-                                System.out.println("ERROR: Product ID must be an integer number");
-                                continue;
-                            }
-
-                            boolean foundProduct = false;
-                            PCPart selectedPart = null;
-                            // Get product with product id and add to order
-                            for (PCPart part : availableParts)
-                            {
-                                if (selectedProductID == part.GetPartNumber())
-                                {
-                                    foundProduct = true;
-                                    selectedPart = part;
-                                    break;
-                                }
-                            }
-
-                            if (!foundProduct)
-                            {
-                                System.out.println("ERROR: Product ID was not found");
-                                continue;
-                            }
-
-                            // Check if the found product is of the correct category (for user QoL)
-                            if (selectedPart.category != currentPartCategory)
-                            {
-                                System.out.println("This product ID does not match the current category you are viewing. Add product anyway? (Y/N)");
-                                if (!input.nextLine().equalsIgnoreCase("y"))
-                                    continue;
-                            }
-
-                            // Add part to order
-                            order.AddPart(selectedPart);
-                            menuState = MenuState.DisplayMainMenu;
-                            break;
-                        }
+                        showPartsForCategory(selectedCategory);
+                        break;
                 }
             }
         }
@@ -416,9 +357,107 @@ public class PCSales {
         availableParts.add(gpu3);
     }
 
+    private static void showMainMenu()
+    {
+        System.out.printf("You currently have %d parts selected.\n", customerOrder.GetParts().size());
+        System.out.println("--- CATEGORIES ---");
+        System.out.println("[1] CPU");
+        System.out.println("[2] Motherboards");
+        System.out.println("[3] RAM");
+        System.out.println("[4] Storage Drives");
+        System.out.println("[5] Cases");
+        System.out.println("[6] Power Supplies");
+        System.out.println("[7] Graphics Cards");
+        System.out.println("--- OPTIONS ---");
+        System.out.println("[66] Review order and confirm");
+        System.out.println("[100] Reset selected parts");
+        System.out.println("[101] Cancel order");
+        System.out.println("[999] Exit program and display total sales");
+        System.out.println();
+        System.out.print("Enter number to select: ");
+    }
+
+    private static void showPartsForCategory(PartCategory category)
+    {
+        menuState = MenuState.DisplayParts;
+
+        // List available parts for selected category
+        System.out.printf("--- %s PRODUCTS ---\n", category.toString().toUpperCase());
+        for (PCPart part : availableParts)
+        {
+            if (part.GetCategory() != category)
+                continue;
+
+            System.out.printf("- [%d] %s %s ($%.2f):\n", part.partNumber, part.brandName, part.productName, part.price);
+            System.out.print(part.GetDetails());
+        }
+        System.out.println();
+
+        // Loop until user enters a valid option
+        while (true)
+        {
+            System.out.print("Enter a product ID to select, or leave empty to go back: ");
+            String answer = input.nextLine();
+
+            // Check if input is left empty, if so, return to main menu
+            if (answer.isEmpty())
+            {
+                menuState = MenuState.DisplayMainMenu;
+                System.out.println();
+                break;
+            }
+
+            // Check if input is an integer
+            int selectedProductID;
+            try
+            {
+                selectedProductID = Integer.parseInt(answer);
+            }
+            catch (RuntimeException e)
+            {
+                System.out.println("ERROR: Product ID must be an integer number");
+                continue;
+            }
+
+            // Check the product registry for the inputted ID and retrieve associated PCPart
+            boolean foundProduct = false;
+            PCPart selectedPart = null;
+            for (PCPart part : availableParts)
+            {
+                if (selectedProductID == part.GetPartNumber())
+                {
+                    foundProduct = true;
+                    selectedPart = part;
+                    break;
+                }
+            }
+
+            if (!foundProduct)
+            {
+                System.out.println("ERROR: Product ID was not found");
+                continue;
+            }
+
+            // Check if the found product is of the correct category (for user QoL)
+            if (selectedPart.category != category)
+            {
+                System.out.println("This product ID does not match the current category you are viewing. Add product anyway? (Y/N)");
+                if (!input.nextLine().equalsIgnoreCase("y"))
+                    continue;
+            }
+
+            // Add part to order
+            customerOrder.AddPart(selectedPart);
+
+            // Return to main menu
+            menuState = MenuState.DisplayMainMenu;
+            System.out.println();
+            break;
+        }
+    }
+
     private static boolean confirmOrder(Order order, Customer customer)
     {
-        // TODO
         // Set order date and time to current time
         // Calculate price for order
         // DISPLAY:
@@ -431,7 +470,7 @@ public class PCSales {
         order.SetOrderDate(currentDateTime.toLocalDate().toString());
         order.SetOrderTime(currentDateTime.toLocalTime().truncatedTo(ChronoUnit.SECONDS).toString());
 
-        System.out.println("--------- REVIEW ORDER ---------");
+        System.out.println("--------- ORDER REVIEW ---------");
         System.out.printf("Order #%d for %s (Customer ID: %d) at %s on %s\n", order.GetOrderNumber(), customer.GetName(), customer.GetID(), order.GetOrderTime(), order.GetOrderDate());
         System.out.println("Ordered parts list:");
 
@@ -449,10 +488,12 @@ public class PCSales {
         Scanner input = new Scanner(System.in);
         String confirmation = input.nextLine();
 
-        if (confirmation == "confirm")
+        if (confirmation.equalsIgnoreCase("confirm"))
         {
             System.out.print("Order placed. Thank you for using PC Part Sales.");
             input.nextLine();
+
+            System.out.println();
 
             // Add order to past orders
             orders.add(order);
