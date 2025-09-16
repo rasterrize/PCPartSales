@@ -9,16 +9,13 @@ public class PCSales
     private static ArrayList<Order> orders;
     private static ArrayList<PCPart> availableParts;
 
-    private static boolean runProgram = true;
-    private static MenuState menuState = MenuState.DisplayMainMenu;
-
     private static Scanner input;
 
     private static Order customerOrder;
 
     private enum MenuState
     {
-        DisplayMainMenu,
+        MainMenu,
         DisplayParts,
         DisplayTotalSales,
         ReviewOrder,
@@ -28,13 +25,14 @@ public class PCSales
     {
         // Init variables
         input = new Scanner(System.in);
-        customers = new ArrayList<Customer>();
-        orders = new ArrayList<Order>();
-        availableParts = new ArrayList<PCPart>();
+        customers = new ArrayList<>();
+        orders = new ArrayList<>();
+        availableParts = new ArrayList<>();
 
         // Prepare available PC parts
         prepareParts();
 
+        boolean runProgram = true;
         while (runProgram)
         {
             // Force reset scanner (due to weird bug that causes it to break)
@@ -72,17 +70,14 @@ public class PCSales
 
             // Create a new customer and add them to the registry
             int newCustomerID = customers.size() + 1;
-            Customer customer = new Customer(newCustomerID, fullName, emailAddress);
-            customers.add(customer);
+            Customer currentCustomer = new Customer(newCustomerID, fullName, emailAddress);
+            customers.add(currentCustomer);
 
             // Create a new order for the customer
             customerOrder = new Order(orders.size() + 1, newCustomerID);
 
-            System.out.println();
-            System.out.printf("Welcome %s, please choose from our variety of pc parts for your order.\n", fullName);
-
             // Ensure correct default menu state
-            menuState = MenuState.DisplayMainMenu;
+            MenuState menuState = MenuState.MainMenu;
 
             // Display menu (categories and options)
             boolean selectingParts = true;
@@ -91,8 +86,8 @@ public class PCSales
             {
                 switch (menuState)
                 {
-                    case DisplayMainMenu:
-                        showMainMenu();
+                    case MainMenu:
+                        showMainMenu(fullName);
 
                         int selectedNumber;
                         try
@@ -102,7 +97,7 @@ public class PCSales
                         catch (RuntimeException e)
                         {
                             System.out.println("ERROR: Category or option must be an integer number");
-                            continue;
+                            break;
                         }
 
                         switch (selectedNumber)
@@ -111,77 +106,91 @@ public class PCSales
                                 // Show CPU products
                                 selectedCategory = PartCategory.CPU;
                                 menuState = MenuState.DisplayParts;
-                                continue;
+                                break;
                             case 2:
                                 // Show Motherboard products
                                 selectedCategory = PartCategory.Motherboard;
                                 menuState = MenuState.DisplayParts;
-                                continue;
+                                break;
                             case 3:
                                 // Show RAM products
                                 selectedCategory = PartCategory.RAM;
                                 menuState = MenuState.DisplayParts;
-                                continue;
+                                break;
                             case 4:
                                 // Show Storage products
                                 selectedCategory = PartCategory.StorageDrive;
                                 menuState = MenuState.DisplayParts;
-                                continue;
+                                break;
                             case 5:
                                 // Show Case products
                                 selectedCategory = PartCategory.Case;
                                 menuState = MenuState.DisplayParts;
-                                continue;
+                                break;
                             case 6:
                                 // Show PSU products
                                 selectedCategory = PartCategory.PSU;
                                 menuState = MenuState.DisplayParts;
-                                continue;
+                                break;
                             case 7:
                                 // Show GPU products
                                 selectedCategory = PartCategory.GPU;
                                 menuState = MenuState.DisplayParts;
-                                continue;
+                                break;
                             case 66:
+                                // Review order
                                 // Check if order is valid (minimum 1 part)
                                 if (customerOrder.GetParts().isEmpty())
                                 {
                                     System.out.println("ERROR: You must select at least one part");
-                                    continue;
+                                    break;
                                 }
 
-                                // Confirm order details and exit
-                                if (confirmOrder(customerOrder, customer))
-                                    selectingParts = false;
-
+                                menuState = MenuState.ReviewOrder;
                                 break;
                             case 100:
                                 // Reset order parts
                                 customerOrder.GetParts().clear();
-                                continue; // NOTE: unsure of how this skips display parts menu state
+                                break;
                             case 101:
                                 // Cancel order
                                 selectingParts = false;
                                 break;
                             case 999:
-                                // Display total sales and exit
-                                displayTotalSales();
-                                selectingParts = false;
-                                runProgram = false;
+                                // Display total sales
+                                menuState = MenuState.DisplayTotalSales;
                                 break;
                             default:
                                 System.out.println("ERROR: Invalid selection. Please try again.");
-                                continue;
+                                break;
                         }
                         break;
                     case DisplayParts:
                         showPartsForCategory(selectedCategory);
+                        menuState = MenuState.MainMenu;
+                        break;
+                    case DisplayTotalSales:
+                        // Remove the last customer since they can't make an order beyond this point anyway
+                        customers.remove(customers.size() - 1);
+
+                        // Display total sales and exit
+                        displayTotalSales();
+                        selectingParts = false;
+                        runProgram = false;
+                        break;
+                    case ReviewOrder:
+                        // Confirm order details and exit
+                        if (reviewOrder(customerOrder, currentCustomer))
+                            selectingParts = false;
+
+                        menuState = MenuState.MainMenu;
                         break;
                 }
             }
         }
 
         System.out.println("Program will exit now. Goodbye!");
+        input.nextLine();
     }
 
     private static void prepareParts()
@@ -257,7 +266,7 @@ public class PCSales
         ram3.SetPartNumber(nextPartNumber++);
         ram3.SetBrandName("Corsair");
         ram3.SetProductName("Vengeance LPX 16 GB");
-        ram3.SetPrice(164.0f);
+        ram3.SetPrice(79.0f);
         availableParts.add(ram3);
 
         // ----------------
@@ -350,15 +359,17 @@ public class PCSales
         availableParts.add(gpu2);
 
         GPU gpu3 = new GPU(16000, 4096);
-        gpu3.SetPartNumber(nextPartNumber++);
+        gpu3.SetPartNumber(nextPartNumber);
         gpu3.SetBrandName("ASUS");
         gpu3.SetProductName("Prime OC Radeon RX 9070 XT");
         gpu3.SetPrice(1199.0f);
         availableParts.add(gpu3);
     }
 
-    private static void showMainMenu()
+    private static void showMainMenu(String customerName)
     {
+        System.out.println();
+        System.out.printf("Welcome %s, please choose from our variety of pc parts for your order.\n", customerName);
         System.out.printf("You currently have %d parts selected.\n", customerOrder.GetParts().size());
         System.out.println("--- CATEGORIES ---");
         System.out.println("[1] CPU");
@@ -379,8 +390,6 @@ public class PCSales
 
     private static void showPartsForCategory(PartCategory category)
     {
-        menuState = MenuState.DisplayParts;
-
         // List available parts for selected category
         System.out.printf("--- %s PRODUCTS ---\n", category.toString().toUpperCase());
         for (PCPart part : availableParts)
@@ -402,7 +411,6 @@ public class PCSales
             // Check if input is left empty, if so, return to main menu
             if (answer.isEmpty())
             {
-                menuState = MenuState.DisplayMainMenu;
                 System.out.println();
                 break;
             }
@@ -441,22 +449,18 @@ public class PCSales
             // Check if the found product is of the correct category (for user QoL)
             if (selectedPart.category != category)
             {
-                System.out.println("This product ID does not match the current category you are viewing. Add product anyway? (Y/N)");
+                System.out.print("This product ID does not match the current category you are viewing. Add product anyway? (Y/N): ");
                 if (!input.nextLine().equalsIgnoreCase("y"))
                     continue;
             }
 
             // Add part to order
             customerOrder.AddPart(selectedPart);
-
-            // Return to main menu
-            menuState = MenuState.DisplayMainMenu;
-            System.out.println();
             break;
         }
     }
 
-    private static boolean confirmOrder(Order order, Customer customer)
+    private static boolean reviewOrder(Order order, Customer customer)
     {
         // Set order date and time to current time
         // Calculate price for order
@@ -501,7 +505,6 @@ public class PCSales
             return true;
         }
 
-        menuState = MenuState.DisplayMainMenu;
         return false;
     }
 
