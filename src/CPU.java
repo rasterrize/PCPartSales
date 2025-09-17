@@ -4,13 +4,13 @@ public class CPU extends PCPart
     private int coreCount;
     private float coreFrequency;
 
-    public CPU(String arch, int coreCount, float coreFreq)
+    public CPU(int productID, String brandName, String productName, double price, String arch, int coreCount, float coreFreq)
     {
+        super(productID, brandName, productName, price);
+        this.category = PartCategory.CPU;
         this.architecture = arch;
         this.coreCount = coreCount;
         this.coreFrequency = coreFreq;
-
-        this.category = PartCategory.CPU;
     }
 
     public String GetArchitecture() { return architecture; }

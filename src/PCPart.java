@@ -5,6 +5,14 @@ public abstract class PCPart {
     protected PartCategory category;
     protected double price;
 
+    protected PCPart(int partNumber, String brandName, String productName, double price)
+    {
+        this.partNumber = partNumber;
+        this.brandName = brandName;
+        this.productName = productName;
+        this.price = price;
+    }
+
     public int GetPartNumber() { return partNumber; }
     public String GetBrandName() { return brandName; }
     public String GetProductName() { return productName; }
@@ -17,4 +25,18 @@ public abstract class PCPart {
     public void SetPrice(double price) { this.price = price; }
 
     public abstract String GetDetails();
+
+    @Override
+    public String toString() {
+        return String.format("PCPart:\n" +
+                "- Part Number: %d \n" +
+                "- Brand Name: %s \n" +
+                "- Product Name: %s \n" +
+                "- Category: %s \n" +
+                "- Price: %.2f \n" +
+                "Unique part details: \n" +
+                "%s\n",
+                partNumber, brandName, productName, category.toString(), price, GetDetails()
+        );
+    }
 }

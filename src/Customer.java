@@ -18,4 +18,14 @@ public class Customer
     public void SetID(int id) { this.id = id; }
     public void SetName(String name) { this.fullName = name; }
     public void SetEmail(String email) { this.emailAddress = email; }
+
+    @Override
+    public String toString() {
+        return String.format("Customer:\n" +
+                "- ID: %d \n" +
+                "- Full Name: %s \n" +
+                "- Email Address: %s \n",
+                id, fullName, emailAddress
+        );
+    }
 }

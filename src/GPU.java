@@ -3,12 +3,12 @@ public class GPU extends PCPart
     private int vramMB;
     private int coreCount;
 
-    public GPU(int vramMB, int coreCount)
+    public GPU(int productID, String brandName, String productName, double price, int vramMB, int coreCount)
     {
+        super(productID, brandName, productName, price);
+        this.category = PartCategory.GPU;
         this.vramMB = vramMB;
         this.coreCount = coreCount;
-
-        this.category = PartCategory.GPU;
     }
 
     public int GetVRAM() { return vramMB; }

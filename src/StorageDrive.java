@@ -3,12 +3,12 @@ public class StorageDrive extends PCPart
     private String driveType;
     private int storageGB;
 
-    public StorageDrive(String type, int space)
+    public StorageDrive(int productID, String brandName, String productName, double price, String type, int space)
     {
+        super(productID, brandName, productName, price);
+        this.category = PartCategory.StorageDrive;
         this.driveType = type;
         this.storageGB = space;
-
-        this.category = PartCategory.StorageDrive;
     }
 
     public String GetDriveType() { return driveType; }

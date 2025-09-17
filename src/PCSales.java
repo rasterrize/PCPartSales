@@ -43,6 +43,9 @@ public class PCSales
             System.out.print("Please enter your full name: ");
             String fullName = input.nextLine();
 
+            int customerID = 0;
+            Customer currentCustomer = null;
+
             // Check if customer already exists
             boolean foundExistingCustomer = false;
             if (!customers.isEmpty()) {
@@ -50,31 +53,34 @@ public class PCSales
                     if (customer.GetName().equalsIgnoreCase(fullName))
                     {
                         foundExistingCustomer = true;
-                        System.out.println("ERROR: This customer already exists, please use another name.");
+                        customerID = customer.GetID();
+                        currentCustomer = customer;
+                        System.out.println("Found existing customer " + fullName + ", welcome back!");
+                        input.nextLine();
                         break;
                     }
                 }
             }
 
-            if (foundExistingCustomer)
-                continue;
-
-            System.out.print("Please enter your email address: ");
-            String emailAddress = input.nextLine();
-
-            if (!emailAddress.contains("@"))
+            if (!foundExistingCustomer)
             {
-                System.out.println("ERROR: Not a valid email address.");
-                continue;
+                System.out.print("Please enter your email address: ");
+                String emailAddress = input.nextLine();
+
+                if (!emailAddress.contains("@"))
+                {
+                    System.out.println("ERROR: Not a valid email address.");
+                    continue;
+                }
+
+                // Create a new customer and add them to the registry
+                customerID = customers.size() + 1;
+                currentCustomer = new Customer(customerID, fullName, emailAddress);
+                customers.add(currentCustomer);
             }
 
-            // Create a new customer and add them to the registry
-            int newCustomerID = customers.size() + 1;
-            Customer currentCustomer = new Customer(newCustomerID, fullName, emailAddress);
-            customers.add(currentCustomer);
-
             // Create a new order for the customer
-            customerOrder = new Order(orders.size() + 1, newCustomerID);
+            customerOrder = new Order(orders.size() + 1, customerID);
 
             // Ensure correct default menu state
             MenuState menuState = MenuState.MainMenu;
@@ -200,169 +206,235 @@ public class PCSales
         // ----------------
         // CPUS
         // ----------------
-        CPU cpu1 = new CPU("x86", 8, 3.4f);
-        cpu1.SetPartNumber(nextPartNumber++);
-        cpu1.SetBrandName("AMD");
-        cpu1.SetProductName("Ryzen 7 5700X");
-        cpu1.SetPrice(264.0f);
+        CPU cpu1 = new CPU(
+                nextPartNumber++,
+                "AMD",
+                "Ryzen 7 5700X",
+                264.0f,
+                "x86",
+                8,
+                3.4f
+        );
         availableParts.add(cpu1);
 
-        CPU cpu2 = new CPU("x86", 16, 4.3f);
-        cpu2.SetPartNumber(nextPartNumber++);
-        cpu2.SetBrandName("AMD");
-        cpu2.SetProductName("Ryzen 9 9950X3D");
-        cpu2.SetPrice(1149.0f);
+        CPU cpu2 = new CPU(
+                nextPartNumber++,
+                "AMD",
+                "Ryzen 9 9950X3D",
+                1149.0f,
+                "x86",
+                16,
+                4.3f
+        );
         availableParts.add(cpu2);
 
-        CPU cpu3 = new CPU("x86", 6, 3.8f);
-        cpu3.SetPartNumber(nextPartNumber++);
-        cpu3.SetBrandName("AMD");
-        cpu3.SetProductName("Ryzen 5 7600");
-        cpu3.SetPrice(309.0f);
+        CPU cpu3 = new CPU(
+                nextPartNumber++,
+                "AMD",
+                "Ryzen 5 7600",
+                309.0f,
+                "x86",
+                6,
+                3.8f
+        );
         availableParts.add(cpu3);
 
         // ----------------
         // Motherboards
         // ----------------
-        Motherboard motherboard1 = new Motherboard("AM5", 4);
-        motherboard1.SetPartNumber(nextPartNumber++);
-        motherboard1.SetBrandName("MSI");
-        motherboard1.SetProductName("MAG B650 TOMAHAWK WIFI");
-        motherboard1.SetPrice(299.0f);
+        Motherboard motherboard1 = new Motherboard(
+                nextPartNumber++,
+                "MSI",
+                "MAG B650 TOMAHAWK WIFI",
+                299.0f,
+                "AM5",
+                4
+        );
         availableParts.add(motherboard1);
 
-        Motherboard motherboard2 = new Motherboard("LGA1700", 4);
-        motherboard2.SetPartNumber(nextPartNumber++);
-        motherboard2.SetBrandName("ASUS");
-        motherboard2.SetProductName("ROG MAXIMUS Z790 DARK HERO");
-        motherboard2.SetPrice(999.0f);
+        Motherboard motherboard2 = new Motherboard(
+                nextPartNumber++,
+                "ASUS",
+                "ROG MAXIMUS Z790 DARK HERO",
+                999.0f,
+                "LGA1700",
+                4
+        );
         availableParts.add(motherboard2);
 
-        Motherboard motherboard3 = new Motherboard("AM4", 2);
-        motherboard3.SetPartNumber(nextPartNumber++);
-        motherboard3.SetBrandName("MSI");
-        motherboard3.SetProductName("B450M-A PRO MAX II");
-        motherboard3.SetPrice(87.0f);
+        Motherboard motherboard3 = new Motherboard(
+                nextPartNumber++,
+                "MSI",
+                "B450M-A PRO MAX II",
+                87.0f,
+                "AM4",
+                2
+        );
         availableParts.add(motherboard3);
 
         // ----------------
         // RAM
         // ----------------
-        RAM ram1 = new RAM(32, 6000);
-        ram1.SetPartNumber(nextPartNumber++);
-        ram1.SetBrandName("Corsair");
-        ram1.SetProductName("Vengeance RGB 32 GB");
-        ram1.SetPrice(164.0f);
+        RAM ram1 = new RAM(
+                nextPartNumber++,
+                "Corsair",
+                "Vengeance RGB 32 GB",
+                164.0f,
+                32,
+                6000
+        );
         availableParts.add(ram1);
 
-        RAM ram2 = new RAM(64, 5200);
-        ram2.SetPartNumber(nextPartNumber++);
-        ram2.SetBrandName("Corsair");
-        ram2.SetProductName("Vengeance 64 GB");
-        ram2.SetPrice(259.0f);
+        RAM ram2 = new RAM(
+                nextPartNumber++,
+                "Corsair",
+                "Vengeance 64 GB",
+                259.0f,
+                64,
+                5200
+        );
         availableParts.add(ram2);
 
-        RAM ram3 = new RAM(16, 3200);
-        ram3.SetPartNumber(nextPartNumber++);
-        ram3.SetBrandName("Corsair");
-        ram3.SetProductName("Vengeance LPX 16 GB");
-        ram3.SetPrice(79.0f);
+        RAM ram3 = new RAM(
+                nextPartNumber++,
+                "Corsair",
+                "Vengeance LPX 16 GB",
+                79.0f,
+                16,
+                3200
+        );
         availableParts.add(ram3);
 
         // ----------------
         // Storage Drives
         // ----------------
-        StorageDrive storageDrive1 = new StorageDrive("NVME SSD", 1000);
-        storageDrive1.SetPartNumber(nextPartNumber++);
-        storageDrive1.SetBrandName("Crucial");
-        storageDrive1.SetProductName("P3 Plus");
-        storageDrive1.SetPrice(92.0f);
+        StorageDrive storageDrive1 = new StorageDrive(
+                nextPartNumber++,
+                "Crucial",
+                "P3 Plus",
+                92.0f,
+                "NVME SSD",
+                1000
+        );
         availableParts.add(storageDrive1);
 
-        StorageDrive storageDrive2 = new StorageDrive("NVME SSD", 4000);
-        storageDrive2.SetPartNumber(nextPartNumber++);
-        storageDrive2.SetBrandName("Western Digital");
-        storageDrive2.SetProductName("WD_BLACK SN8100");
-        storageDrive2.SetPrice(759.0f);
+        StorageDrive storageDrive2 = new StorageDrive(
+                nextPartNumber++,
+                "Western Digital",
+                "WD_BLACK SN8100",
+                759.0f,
+                "NVME SSD",
+                4000
+        );
         availableParts.add(storageDrive2);
 
-        StorageDrive storageDrive3 = new StorageDrive("SATA SSD", 480);
-        storageDrive3.SetPartNumber(nextPartNumber++);
-        storageDrive3.SetBrandName("Samsung");
-        storageDrive3.SetProductName("870 Evo");
-        storageDrive3.SetPrice(69.0f);
+        StorageDrive storageDrive3 = new StorageDrive(
+                nextPartNumber++,
+                "Samsung",
+                "870 Evo",
+                69.0f,
+                "SATA SSD",
+                480
+        );
         availableParts.add(storageDrive3);
 
         // ----------------
         // Cases
         // ----------------
-        Case case1 = new Case("ATX Mid Tower", false);
-        case1.SetPartNumber(nextPartNumber++);
-        case1.SetBrandName("Corsair");
-        case1.SetProductName("4000D Airflow");
-        case1.SetPrice(159.0f);
+        Case case1 = new Case(
+                nextPartNumber++,
+                "Corsair",
+                "4000D Airflow",
+                159.0f,
+                "ATX Mid Tower",
+                false
+        );
         availableParts.add(case1);
 
-        Case case2 = new Case("ATX Mid Tower", true);
-        case2.SetPartNumber(nextPartNumber++);
-        case2.SetBrandName("HYTE");
-        case2.SetProductName("Y70 Touch Infinite");
-        case2.SetPrice(639.0f);
+        Case case2 = new Case(
+                nextPartNumber++,
+                "HYTE",
+                "Y70 Touch Infinite",
+                639.0f,
+                "ATX Mid Tower",
+                true
+        );
         availableParts.add(case2);
 
-        Case case3 = new Case("ATX Full Tower", true);
-        case3.SetPartNumber(nextPartNumber++);
-        case3.SetBrandName("be quiet!");
-        case3.SetProductName("Light Base 900 DX");
-        case3.SetPrice(171.0f);
+        Case case3 = new Case(
+                nextPartNumber++,
+                "be quiet!",
+                "Light Base 900 DX",
+                171.0f,
+                "ATX Full Tower",
+                true
+        );
         availableParts.add(case3);
 
         // ----------------
         // Power Supplies
         // ----------------
-        PSU psu1 = new PSU(750, "80+ Gold");
-        psu1.SetPartNumber(nextPartNumber++);
-        psu1.SetBrandName("MSI");
-        psu1.SetProductName("MAG A750GL PCIE5");
-        psu1.SetPrice(127.0f);
+        PSU psu1 = new PSU(
+                nextPartNumber++,
+                "MSI",
+                "MAG A750GL PCIE5",
+                127.0f,
+                750,
+                "80+ Gold"
+        );
         availableParts.add(psu1);
 
-        PSU psu2 = new PSU(1600, "80+ Titanium");
-        psu2.SetPartNumber(nextPartNumber++);
-        psu2.SetBrandName("ASUS");
-        psu2.SetProductName("ROG THOR 1600T Gaming");
-        psu2.SetPrice(899.0f);
+        PSU psu2 = new PSU(
+                nextPartNumber++,
+                "ASUS",
+                "ROG THOR 1600T Gaming",
+                899.0f,
+                1600,
+                "80+ Titanium"
+        );
         availableParts.add(psu2);
 
-        PSU psu3 = new PSU(550, "80+ Bronze");
-        psu3.SetPartNumber(nextPartNumber++);
-        psu3.SetBrandName("Corsair");
-        psu3.SetProductName("CX (2023)");
-        psu3.SetPrice(84.0f);
+        PSU psu3 = new PSU(
+                nextPartNumber++,
+                "Corsair",
+                "CX (2023)",
+                84.0f,
+                550,
+                "80+ Bronze"
+        );
         availableParts.add(psu3);
 
         // ----------------
         // Graphics Cards
         // ----------------
-        GPU gpu1 = new GPU(12000, 3584);
-        gpu1.SetPartNumber(nextPartNumber++);
-        gpu1.SetBrandName("MSI");
-        gpu1.SetProductName("GeForce RTX 3060 Ventus 2X 12GB");
-        gpu1.SetPrice(419.0f);
+        GPU gpu1 = new GPU(
+                nextPartNumber++,
+                "MSI",
+                "GeForce RTX 3060 Ventus 2X 12GB",
+                419.0f,
+                12000,
+                3584
+        );
         availableParts.add(gpu1);
 
-        GPU gpu2 = new GPU(32000, 21760);
-        gpu2.SetPartNumber(nextPartNumber++);
-        gpu2.SetBrandName("ASUS");
-        gpu2.SetProductName("ROG Astral OC GeForce RTX 5090");
-        gpu2.SetPrice(5295.0f);
+        GPU gpu2 = new GPU(
+                nextPartNumber++,
+                "ASUS",
+                "ROG Astral OC GeForce RTX 5090",
+                5295.0f,
+                32000,
+                21760
+        );
         availableParts.add(gpu2);
 
-        GPU gpu3 = new GPU(16000, 4096);
-        gpu3.SetPartNumber(nextPartNumber);
-        gpu3.SetBrandName("ASUS");
-        gpu3.SetProductName("Prime OC Radeon RX 9070 XT");
-        gpu3.SetPrice(1199.0f);
+        GPU gpu3 = new GPU(
+                nextPartNumber++,
+                "ASUS",
+                "Prime OC Radeon RX 9070 XT",
+                1199.0f,
+                16000,
+                4096
+        );
         availableParts.add(gpu3);
     }
 

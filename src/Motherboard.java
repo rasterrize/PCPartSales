@@ -3,12 +3,12 @@ public class Motherboard extends PCPart
     private String socketType;
     private int ramSlots;
 
-    public Motherboard(String socketType, int ramSlots)
+    public Motherboard(int productID, String brandName, String productName, double price, String socketType, int ramSlots)
     {
+        super(productID, brandName, productName, price);
+        this.category = PartCategory.Motherboard;
         this.socketType = socketType;
         this.ramSlots = ramSlots;
-
-        this.category = PartCategory.Motherboard;
     }
 
     public String GetSocketType() { return socketType; }

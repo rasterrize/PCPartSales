@@ -3,12 +3,12 @@ public class Case extends PCPart
     private String formFactor;
     private boolean hasRGB;
 
-    public Case(String formFactor, boolean hasRGB)
+    public Case(int productID, String brandName, String productName, double price, String formFactor, boolean hasRGB)
     {
+        super(productID, brandName, productName, price);
+        this.category = PartCategory.Case;
         this.formFactor = formFactor;
         this.hasRGB = hasRGB;
-
-        this.category = PartCategory.Case;
     }
 
     public String GetFormFactor() { return formFactor; }

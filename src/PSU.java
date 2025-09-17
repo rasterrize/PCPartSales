@@ -3,12 +3,12 @@ public class PSU extends PCPart
     private int wattage;
     private String efficiency;
 
-    public PSU(int wattage, String efficiency)
+    public PSU(int productID, String brandName, String productName, double price, int wattage, String efficiency)
     {
+        super(productID, brandName, productName, price);
+        this.category = PartCategory.PSU;
         this.wattage = wattage;
         this.efficiency = efficiency;
-
-        this.category = PartCategory.PSU;
     }
 
     public int GetWattage() { return wattage; }
