@@ -1,3 +1,10 @@
+/*
+    Author: Jye Curtis-Smith
+    Version: 1.0
+    Date: 3/11/2025
+    PCSales class - Console based version of the program, serving as an alternative to the GUI
+ */
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -87,7 +94,7 @@ public class PCSales
 
             // Display menu (categories and options)
             boolean selectingParts = true;
-            PartCategory selectedCategory = PartCategory.Invalid;
+            PartCategory selectedCategory = PartCategory.CPU;
             while (selectingParts)
             {
                 switch (menuState)

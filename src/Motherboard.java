@@ -1,3 +1,10 @@
+/*
+    Author: Jye Curtis-Smith
+    Version: 1.0
+    Date: 3/11/2025
+    Motherboard class, pc part used as a main pcb to connect multiple parts the pc. This class holds Motherboard unique data.
+ */
+
 public class Motherboard extends PCPart
 {
     private String socketType;

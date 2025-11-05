@@ -1,3 +1,10 @@
+/*
+    Author: Jye Curtis-Smith
+    Version: 1.0
+    Date: 3/11/2025
+    PSU class, pc part used to supply power, aka Power Supply Unit. This class holds PSU unique data.
+ */
+
 public class PSU extends PCPart
 {
     private int wattage;

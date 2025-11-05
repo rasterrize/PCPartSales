@@ -1,3 +1,11 @@
+/*
+    Author: Jye Curtis-Smith
+    Version: 1.0
+    Date: 3/11/2025
+    Order class - Stores information relating to a customer's specific order. Includes the orders pc parts, customer
+    order date and time, etc.
+ */
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;

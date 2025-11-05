@@ -1,3 +1,10 @@
+/*
+    Author: Jye Curtis-Smith
+    Version: 1.0
+    Date: 3/11/2025
+    CPU class, pc part used to execute code on a pc. This class holds CPU unique data.
+ */
+
 public class CPU extends PCPart
 {
     private String architecture;

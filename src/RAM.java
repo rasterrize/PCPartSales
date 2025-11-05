@@ -1,3 +1,10 @@
+/*
+    Author: Jye Curtis-Smith
+    Version: 1.0
+    Date: 3/11/2025
+    RAM class, pc part used to store temporary data to run the pc. This class holds RAM unique data.
+ */
+
 public class RAM extends PCPart
 {
     private int gigabytes;

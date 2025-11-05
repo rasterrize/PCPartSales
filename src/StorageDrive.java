@@ -1,3 +1,10 @@
+/*
+    Author: Jye Curtis-Smith
+    Version: 1.0
+    Date: 3/11/2025
+    StorageDrive class, pc part used to store permanent data to the pc (such as ssd, hdd). This class holds StorageDrive unique data.
+ */
+
 public class StorageDrive extends PCPart
 {
     private String driveType;

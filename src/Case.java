@@ -1,3 +1,10 @@
+/*
+    Author: Jye Curtis-Smith
+    Version: 1.0
+    Date: 3/11/2025
+    Case class, pc part used to physically hold the different parts of a pc. This class holds case unique data.
+ */
+
 public class Case extends PCPart
 {
     private String formFactor;

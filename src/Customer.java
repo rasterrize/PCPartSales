@@ -1,3 +1,10 @@
+/*
+    Author: Jye Curtis-Smith
+    Version: 1.0
+    Date: 3/11/2025
+    Customer class, Customer is a user of the program who makes pc part orders.
+ */
+
 public class Customer
 {
     private int id;

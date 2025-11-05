@@ -1,3 +1,10 @@
+/*
+    Author: Jye Curtis-Smith
+    Version: 1.0
+    Date: 3/11/2025
+    Abstract base class for a pc part. Stores common data shared between every pc part (brand name, product id, etc)
+ */
+
 public abstract class PCPart {
     protected int partNumber;
     protected String brandName;

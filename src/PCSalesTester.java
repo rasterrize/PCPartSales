@@ -1,3 +1,10 @@
+/*
+    Author: Jye Curtis-Smith
+    Version: 1.0
+    Date: 3/11/2025
+    PCSales tester class - Runs tests for different objects used in the program (orders, customers, parts)
+ */
+
 public class PCSalesTester
 {
     public static void main(String[] args)
